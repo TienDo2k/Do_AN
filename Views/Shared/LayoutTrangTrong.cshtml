@@ -1,0 +1,503 @@
+﻿
+@using BTCK_PhanTienDo.Models;
+@functions {
+    public MyDbContext db = new MyDbContext();
+    public List<NewsRecord> HotNews()
+    {
+        //Take(6) lấy 6 bản ghi đầu tien (gần đầu nhất )
+        List<NewsRecord> listRecord = db.News.OrderByDescending(tbl => tbl.ID).Take(6).ToList();
+        return listRecord;
+    }
+    public List<CategoriesRecord> Categories()
+    {
+        List<CategoriesRecord> listRecord = db.Categories.ToList();
+        return listRecord;
+    }
+}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="~/Frontend/plugins/bootstrap/bootstrap.min.css">
+
+    <link rel="stylesheet" type="text/css" href="~/Frontend/css/style.css">
+
+    <link rel="stylesheet" href="~/Frontend/plugins/animate/animate.min.css">
+
+    <link rel="stylesheet" href="~/Frontend/plugins/fontawesome/all.css">
+
+    <link href="~/Frontend/plugins/webfonts/font.css"
+          rel="stylesheet">
+    <link rel="stylesheet" href="~/Frontend/css/owl.carousel.min.css" type="text/css">
+    <link rel="stylesheet" href="~/Frontend/css/owl.theme.default.min.css" type="text/css">
+
+    <script src='~/Frontend/css/bootstrap.min221b.js?1481775169361' type='text/javascript'></script>
+
+    <!-- UIkit CSS -->
+    <link rel="stylesheet" href="~/Frontend/plugins/uikit/uikit.min.css" />
+    <link rel="stylesheet" href="~/Frontend/css/sign.css">
+
+    <script src="~/Frontend/plugins/jquery-3.4.1/jquery-3.4.1.min.js"></script>
+
+    <title>Tất cả sản phẩm</title>
+
+</head>
+
+<body>
+    <!--Start of Tawk.to Script-->
+    <script type="text/javascript">
+        var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
+        (function () {
+            var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
+            s1.async = true;
+            s1.src = 'https://embed.tawk.to/611278e7d6e7610a49af84bb/1fco2gisu';
+            s1.charset = 'UTF-8';
+            s1.setAttribute('crossorigin', '*');
+            s0.parentNode.insertBefore(s1, s0);
+        })();
+    </script>
+    <!--End of Tawk.to Script-->
+    <div id="fb-root"></div>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/vi_VN/sdk.js#xfbml=1&version=v11.0" nonce="Ta2OBzQR"></script>
+    @*load menu ngang*@
+    @Html.Partial("~/Views/Shared/Header.cshtml")
+
+    <div class="breadcrumb-shop">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 pd5">
+                    <ol class="breadcrumb breadcrumb-arrows">
+                        <li>
+                            <a href="/">
+                                <span>Trang chủ</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="Product.html">
+                                <span>Danh mục</span>
+                            </a>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container" style="margin-top: 50px;">
+        <div class="row">
+            <div class="col-md-3 col-sm-12 col-xs-12 sidebar-fix">
+                <div class="wrap-filter">
+                    <div class="box_sidebar">
+                        <div class="block left-module">
+                            <div class=" filter_xs">
+                                <div class="group-menu">
+                                    <div class="title_block d-block d-sm-none d-none d-sm-block d-md-none" data-toggle="collapse"
+                                         href="#collapseExample1" role="button" aria-expanded="false"
+                                         aria-controls="collapseExample1">
+                                        Danh mục sản phẩm
+                                        <span>
+                                            <i class="fa fa-angle-down" data-toggle="collapse"
+                                               href="#collapseExample1" role="button" aria-expanded="false"
+                                               aria-controls="collapseExample1"></i>
+                                        </span>
+                                    </div>
+                                    <div class="block_content layered-category collapse" id="collapseExample1">
+                                        <div class="layered-content card card-body" style="border:0;padding:0">
+                                            <ul class="menuList-links">
+                                                <li class=""><a href="/" title="Trang chủ"><span>Trang chủ</span></a></li>
+                                                @*<li class=" active ">
+                                                        <a href="" title="Bộ sưu tập"><span>Bộ sưu tập</span></a>
+                                                    </li>*@
+                                                <li class="has-submenu level0 ">
+                                                    <a title="Sản phẩm">
+                                                        Sản phẩm<span class="icon-plus-submenu" data-toggle="collapse"
+                                                                      href="#collapseExample" role="button" aria-expanded="false"
+                                                                      aria-controls="collapseExample"></span>
+                                                    </a>
+                                                    <div class="collapse" id="collapseExample">
+                                                        <div class="card card-body" style="border:0;padding-top:0;">
+                                                            <ul class="menu-product">
+
+                                                                @{
+                                                                    List<CategoriesRecord> listCategories = Categories();
+                                                                }
+                                                                @foreach (var item in listCategories)
+                                                                {
+                                                                    <li><a href="/Products/Category/@item.ID">@item.Name</a></li>
+                                                                }
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                @*<li class=""><a href="introduce.html" title="Giới thiệu"><span>Giới thiệu</span></a></li>*@
+                                                <li class=""><a href="/News" title="Blog"><span>Blog</span></a></li>
+                                                <li class=""><a href="/Contact" title="Liên hệ"><span>Liên hệ</span></a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="layered">
+                                    <p class="title_block d-block d-sm-none d-none d-sm-block d-md-none" data-toggle="collapse"
+                                       href="#collapseExample2" role="button" aria-expanded="false"
+                                       aria-controls="collapseExample2">
+                                        Bộ lọc sản phẩm
+                                        <span>
+                                            <i class="fa fa-angle-down" data-toggle="collapse"
+                                               href="#collapseExample2" role="button" aria-expanded="false"
+                                               aria-controls="collapseExample2"></i>
+                                        </span>
+                                    </p>
+                                    <div class="block_content collapse" id="collapseExample2">
+                                        <div class="group-filter card card-body" style="border:0;padding:0" aria-expanded="true">
+                                            <div class="layered_subtitle dropdown-filter">
+                                                <span>Thương hiệu</span><span class="icon-control"><i class="fa fa-minus"></i></span>
+                                            </div>
+                                            <div class="layered-content bl-filter filter-brand">
+                                                <ul class="check-box-list">
+                                                    <li>
+                                                        <input type="checkbox" id="data-brand-p1" value="Khác">
+                                                        <label for="data-brand-p1">Khác</label>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="group-filter" aria-expanded="true">
+                                            <div class="layered_subtitle dropdown-filter">
+                                                <span>Giá sản phẩm</span><span class="icon-control"><i class="fa fa-minus"></i></span>
+                                            </div>
+                                            <div class="layered-content bl-filter filter-price">
+                                                @*<ul class="check-box-list">
+                                                        <li>
+                                                            <input type="checkbox" id="p1" value="p500" onclick="location.href = '/Products/Category/@ViewContext.RouteData.Values["id"]?order='+this.value;">
+                                                            <label for="p1">
+                                                                <span>Dưới</span> 500,000₫
+                                                            </label>
+                                                        </li>
+                                                        <li>
+                                                            <input type="checkbox" id="p2" value="p500_1000" onchange="location.href = '/Products/Category/@ViewContext.RouteData.Values["id"]?order='+this.value;">
+                                                            <label for="p2">
+                                                                500,000₫ - 1,000,000₫
+                                                            </label>
+                                                        </li>
+                                                        <li>
+                                                            <input type="checkbox" id="p3" value="p1000_1500" onchange="location.href = '/Products/Category/@ViewContext.RouteData.Values["id"]?order='+this.value;">
+                                                            <label for="p3">
+                                                                1,000,000₫ - 1,500,000₫
+                                                            </label>
+                                                        </li>
+                                                        <li>
+                                                            <input type="checkbox" id="p4" value="p2000_5000" onchange="location.href = '/Products/Category/@ViewContext.RouteData.Values["id"]?order='+this.value;">
+                                                            <label for="p4">
+                                                                2,000,000₫ - 5,000,000₫
+                                                            </label>
+                                                        </li>
+                                                        <li>
+                                                            <input type="checkbox" id="p5" value="p5000" onchange="location.href = '/Products/Category/@ViewContext.RouteData.Values["id"]?order='+this.value;">
+                                                            <label for="p5">
+                                                                <span>Trên</span> 5,000,000₫
+                                                            </label>
+                                                        </li>
+                                                    </ul>*@
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="group-filter" aria-expanded="true">
+                                    @*<div class="layered_subtitle dropdown-filter">
+                                            <span>Màu sắc</span><span class="icon-control">
+                                                <i class="fa fa-minus"></i>
+                                            </span>
+                                        </div>*@
+                                    <div class="layered-content filter-color s-filter">
+                                        @*<ul class="check-box-list">
+                                                <li>
+                                                    <input type="checkbox" id="data-color-p1">
+                                                    <label for="data-color-p1" style="background-color: #fb4727"></label>
+                                                </li>
+                                                <li>
+                                                    <input type="checkbox" id="data-color-p2">
+                                                    <label for="data-color-p2" style="background-color: #fdfaef"></label>
+                                                </li>
+                                                <li>
+                                                    <input type="checkbox" id="data-color-p3">
+                                                    <label for="data-color-p3" style="background-color: #3e3473"></label>
+                                                </li>
+                                                <li>
+                                                    <input type="checkbox" id="data-color-p4">
+                                                    <label for="data-color-p4" style="background-color: #ffffff"></label>
+                                                </li>
+                                                <li>
+                                                    <input type="checkbox" id="data-color-p5">
+                                                    <label for="data-color-p5" style="background-color: #75e2fb"></label>
+                                                </li>
+                                                <li>
+                                                    <input type="checkbox" id="data-color-p6">
+                                                    <label for="data-color-p6" style="background-color: #cecec8"></label>
+                                                </li>
+                                                <li>
+                                                    <input type="checkbox" id="data-color-p7">
+                                                    <label for="data-color-p7" style="background-color: #6daef4"></label>
+                                                </li>
+                                                <li>
+                                                    <input type="checkbox" id="data-color-p8">
+                                                    <label for="data-color-p8" style="background-color: #000000"></label>
+                                                </li>
+                                                <li>
+                                                    <input type="checkbox" id="data-color-p9">
+                                                    <label for="data-color-p9" style="background-color: #e2262a"></label>
+                                                </li>
+                                                <li>
+                                                    <input type="checkbox" id="data-color-p10">
+                                                    <label for="data-color-p10" style="background-color: #ee8aa1"></label>
+                                                </li>
+                                                <li>
+                                                    <input type="checkbox" id="data-color-p11">
+                                                    <label for="data-color-p11" style="background-color: #4a5250"></label>
+                                                </li>
+                                            </ul>*@
+
+                                    </div>
+                                </div>
+                                <div class="group-filter" aria-expanded="true">
+                                    @*<div class="layered_subtitle dropdown-filter">
+                                            <span>Kích thước</span><span class="icon-control">
+                                                <i class="fa fa-minus"></i>
+                                            </span>
+                                        </div>*@
+                                    @*<div class="layered-content filter-size s-filter">
+
+                                            <ul class="check-box-list clearfix">
+
+                                                <li>
+                                                    <input type="checkbox" id="data-size-p1">
+                                                    <label for="data-size-p1">35</label>
+                                                </li>
+
+                                                <li>
+                                                    <input type="checkbox" id="data-size-p2">
+                                                    <label for="data-size-p2">36</label>
+                                                </li>
+
+                                                <li>
+                                                    <input type="checkbox" id="data-size-p3">
+                                                    <label for="data-size-p3">37</label>
+                                                </li>
+
+                                                <li>
+                                                    <input type="checkbox" id="data-size-p4">
+                                                    <label for="data-size-p4">38</label>
+                                                </li>
+
+                                                <li>
+                                                    <input type="checkbox" id="data-size-p5">
+                                                    <label for="data-size-p5">39</label>
+                                                </li>
+
+                                                <li>
+                                                    <input type="checkbox" id="data-size-p6">
+                                                    <label for="data-size-p6">40</label>
+                                                </li>
+
+                                            </ul>
+                                        </div>*@
+                                    <!-- box search -->
+                                    <div class="panel panel-default" style="margin-top:15px;">
+                                        <div class="panel-heading"> Tìm theo mức giá </div>
+                                        <div class="panel-body">
+                                            <ul class="list-group" style="border:0px;">
+                                                <li class="list-group-item" style="border:0px;">
+                                                    Giá từ &nbsp;&nbsp;
+                                                    <input type="number" min="0" value="0" id="fromPrice" class="form-control" />
+                                                </li>
+                                                <li class="list-group-item" style="border:0px;">
+                                                    Đến &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                    <input type="number" min="0" value="0" id="toPrice" class="form-control" />
+                                                </li>
+                                                <li class="list-group-item" style="border:0px; text-align:center">
+                                                    <input type="button" class="btn btn-warning" value="Tìm mức giá" onclick="location.href = '/Search/SearchPrice?fromPrice=' + document.getElementById('fromPrice').value + '&toPrice=' + document.getElementById('toPrice').value;" />
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <!-- end box search -->
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--List Prodct-->
+            <div class="col-md-9 col-sm-12 col-xs-12">
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+
+
+    <!--gallery-->
+    <section class="section section-gallery">
+        <div class="">
+            <div class="hot_sp" style="padding-top: 70px;padding-bottom: 50px;">
+                <h2 style="text-align:center;padding-top: 10px">
+                    <a style="font-size: 28px;color: black;text-decoration: none" href="">Khách hàng và Runner Inn</a>
+                </h2>
+            </div>
+            <div class="list-gallery clearfix">
+                <ul class="shoes-gp">
+                    <li>
+                        <div class="gallery_item">
+                            <img class="img-resize" src="~/Frontend/images/shoes/gallery_item_1.jpg" alt="">
+                        </div>
+                    </li>
+                    <li>
+                        <div class="gallery_item">
+                            <img class="img-resize" src="~/Frontend/images/shoes/gallery_item_2.jpg" alt="">
+                        </div>
+                    </li>
+                    <li>
+                        <div class="gallery_item">
+                            <img class="img-resize" src="~/Frontend/images/shoes/gallery_item_3.jpg" alt="">
+                        </div>
+                    </li>
+                    <li>
+                        <div class="gallery_item">
+                            <img class="img-resize" src="~/Frontend/images/shoes/gallery_item_4.jpg" alt="">
+                        </div>
+                    </li>
+                    <li>
+                        <div class="gallery_item">
+                            <img class="img-resize" src="~/Frontend/images/shoes/gallery_item_5.jpg" alt="">
+                        </div>
+                    </li>
+                    <li>
+                        <div class="gallery_item">
+                            <img class="img-resize" src="~/Frontend/images/shoes/gallery_item_6.jpg" alt="">
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+    <footer class="main-footer">
+        <div class="container">
+            <div class="">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6 col-md-3">
+                        <div class="footer-col footer-block">
+                            <h4 class="footer-title">
+                                Giới thiệu
+                            </h4>
+                            <div class="footer-content">
+                                <p>
+                                    Runner Inn trang mua sắm trực tuyến của thương hiệu giày, thời trang nam, nữ, phụ kiện, giúp bạn
+                                    tiếp
+                                    cận xu hướng thời trang mới nhất.
+                                </p>
+                                <div class="logo-footer">
+                                    <img src="~/Frontend/images/logo-bct.png" alt="Bộ Công Thương">
+                                </div>
+                                <div class="social-list">
+                                    <a href="#" class="fab fa-facebook"></a>
+                                    <a href="#" class="fab fa-google"></a>
+                                    <a href="#" class="fab fa-twitter"></a>
+                                    <a href="#" class="fab fa-youtube"></a>
+                                    <a href="#" class="fab fa-skype"></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-md-3">
+                        <div class="footer-col footer-link">
+                            <h4 class="footer-title">
+                                PHÁP LÝ &amp; CÂU HỎI
+                            </h4>
+                            <div class="footer-content toggle-footer">
+                                <ul>
+                                    <li class="item">
+                                        <a href="#" title="Tìm kiếm">Tìm kiếm</a>
+                                    </li>
+                                    <li class="item">
+                                        <a href="#" title="Giới thiệu">Giới thiệu</a>
+                                    </li>
+                                    <li class="item">
+                                        <a href="#" title="Chính sách đổi trả">Chính sách đổi trả</a>
+                                    </li>
+                                    <li class="item">
+                                        <a href="#" title="Chính sách bảo mật">Chính sách bảo mật</a>
+                                    </li>
+                                    <li class="item">
+                                        <a href="#" title="Điều khoản dịch vụ">Điều khoản dịch vụ</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-md-3">
+                        <div class="footer-col footer-block">
+                            <h4 class="footer-title">
+                                Thông tin liên hệ
+                            </h4>
+                            <div class="footer-content toggle-footer">
+                                <ul>
+                                    <li><span>Địa chỉ:</span> 145- Mai Dịch- Cầu Giấy- Hà Nội- Vietnam</li>
+                                    <li><span>Điện thoại:</span> +84 (028) 38800659</li>
+                                    <li><span>Fax:</span> +84 (028) 38800659</li>
+                                    <li><span>Mail:</span> contact@aziworld.com</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-md-3">
+                        <div class="footer-col footer-block">
+                            <h4 class="footer-title">
+                                FANPAGE
+                            </h4>
+                            <div class="footer-content">
+                                <div id="fb-root">
+                                    <div class="footer-static-content">
+                                        <div class="fb-page" data-href="https://www.facebook.com/AziWorld-Viet-Nam-908555669481794/"
+                                             data-tabs="timeline" data-width="" data-height="215" data-small-header="false"
+                                             data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true">
+                                            <blockquote cite="https://www.facebook.com/AziWorld-Viet-Nam-908555669481794/"
+                                                        class="fb-xfbml-parse-ignore">
+                                                <a href="https://www.facebook.com/AziWorld-Viet-Nam-908555669481794/">AziWorld Viet Nam</a>
+                                            </blockquote>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="main-footer--copyright">
+            <div class="container">
+                <hr>
+                <div class="main-footer--border" style="text-align:center;padding-bottom: 15px;">
+                    <p>
+                        Copyright © 2019 <a href="https://runner-inn.myharavan.com"> Runner Inn</a>. <a target="_blank"
+                                                                                                        href="https://www.facebook.com/henrynguyen202">Powered by HuniBlue</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script async defer crossorigin="anonymous" src="~/Frontend/plugins/sdk.js"></script>
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script> -->
+    @*<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>*@
+    <script src="~/Frontend/plugins/bootstrap/popper.min.js"></script>
+    <script src="~/Frontend/plugins/bootstrap/bootstrap.min.js"></script>
+    <script src="~/Frontend/plugins/owl.carousel/owl.carousel.min.js"></script>
+
+    <script src="~/Frontend/plugins/uikit/uikit.min.js"></script>
+    <script src="~/Frontend/plugins/uikit/uikit-icons.min.js"></script>
+    <script src="~/Frontend/js/sign.js"></script>
+    @*<script type="text/javascript" src="path/…./jquery-latest.js"></script>*@
+</body>
+
+</html>

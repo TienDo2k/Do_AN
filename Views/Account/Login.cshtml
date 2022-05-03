@@ -1,0 +1,71 @@
+﻿@{
+    ViewData["Title"] = "Login";
+    Layout = "~/Views/Shared/LayoutTrangTrong.cshtml";
+}
+
+<div class="content">
+    <section class="signin ">
+        <div class="container">
+            <div class="signin-left">
+                <div class="sign-title">
+                    <h1>Đăng nhập</h1>
+                </div>
+            </div>
+            <div class="signin-right " id="a-sign">
+                <form method='post' action="/Account/LoginPost">
+                    @Html.AntiForgeryToken()
+                    <div class="username form-control1 ">
+                        @*<label>Tài Khoản :</label>
+                          <input type="email" class="input-control" name="email " required="">*@
+                        <label>Email:<b id="req">*</b></label>
+                        <input type="email" @*class="input-control"*@ name="email" required="">
+                    </div>
+                    <div class="password form-control1">
+                        @*<label>Mật khẩu :</label>
+                        <input type="password" class="input-control" name="password" required="">*@
+                        <label>Mật khẩu:<b id="req">*</b></label>
+                        <input type="password" @*class="input-control"*@ name="password" required="">
+                    </div>
+                    <input style="margin-left: 30px; border-radius: 5px; background: #287c8a; color: white; font-size: 18px;" type="submit" class="btn" value="Đăng nhập" />
+                </form>
+            </div>
+
+        </div>
+    </section>
+</div>
+
+@*@{
+        ViewData["Title"] = "Login";
+        Layout = "~/Views/Shared/LayoutTrangTrong.cshtml";
+    }
+
+    <div class="template-customer">
+        <h1>Đăng nhập tài khoản</h1>
+        <p>Nếu bạn có tài khoản xin vui lòng đăng nhập</p>
+        <div class="row" style="margin-top:50px;">
+            <div class="col-md-6">
+                <div class="wrapper-form">
+                    <form method='post' action="/Account/LoginPost">
+                        @Html.AntiForgeryToken()
+                        <p class="title"><span>Đăng nhập tài khoản</span></p>
+                        <div class="form-group">
+                            <label>Email:<b id="req">*</b></label>
+                            <input type="email" class="input-control" name="email" required="">
+                        </div>
+                        <div class="form-group">
+                            <label>Mật khẩu:<b id="req">*</b></label>
+                            <input type="password" class="input-control" name="password" required="">
+                        </div>
+                        <input type="submit" class="btn" value="Đăng nhập" style="border-radius: 5px; background: #287c8a; color: white; font-size: 18px;">
+                    </form>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="wrapper-form">
+                    <p class="title"><span>Tạo tài khoản mới</span></p>
+                    <p>Đăng ký tài khoản để mua hàng nhanh hơn. Theo dõi đơn đặt hàng, vận chuyển. Cập nhật các sự kiện và chương trình giảm giá của chúng tôi.</p>
+                    <a href="/Account/Register" class="btn" style="border-radius: 5px; background: #287c8a; color: white; font-size: 18px;">Đăng ký</a>
+                </div>
+            </div>
+        </div>
+    </div>*@

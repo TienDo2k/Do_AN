@@ -1,0 +1,438 @@
+﻿@{ // load file layout trang chu
+    Layout = "~/Views/Shared/LayoutTrangChu.cshtml"; }
+@using BTCK_PhanTienDo.Models
+@using Microsoft.EntityFrameworkCore
+@* su dung cho ham Raw -> chuye ky tu html dac biet *@
+@using Microsoft.AspNetCore.Mvc.Rendering
+
+@functions{ public MyDbContext db = new MyDbContext();
+    //sp noi bat
+    public List<ProductsRecord> HotProduct()
+    {
+        List<ProductsRecord> listRecord = db.Products.Where(tbl => tbl.Hot == 1).OrderByDescending(tbl => tbl.ID).Take(8).ToList();
+        return listRecord;
+    } 
+    public List<ProductsRecord> CustemProduct()
+    {  
+        //select * from Products where Name LIKE ‘%gallery%’"
+       // List<ProductsRecord> listRecord = db.Products.Where(tbl => tbl.Hot == 1).OrderByDescending(tbl => tbl.ID).Take(6).ToList();
+       List<ProductsRecord> listRecord = db.Products.FromSqlRaw("select * from Products where Name like '%gallery%'").Take(6).ToList();
+       return listRecord;
+    }
+    //danh muc san pham (chi lay danh muc co san pham ben trong no)
+    public List<CategoriesRecord> Categories()
+    {
+        List<CategoriesRecord> listRecord = db.Categories.FromSqlRaw("select * from Categories where Name !='gallery' and ID in (select CategoryID from Products where Categories.ID = Products.CategoryID)").ToList();
+        return listRecord;
+    }
+    // liet ke cac san pham
+    public List<ProductsRecord> Products(int intCategoryID)
+    {
+        List<ProductsRecord> listRecord = db.Products.Where(tbl => tbl.CategoryID == intCategoryID).OrderByDescending(tbl => tbl.ID).Take(8).ToList();
+        return listRecord;
+    }
+
+    // tin tuc noi bat
+    public List<NewsRecord> HotNews()
+    {
+        List<NewsRecord> listRecord = db.News.Where(tbl => tbl.Hot == 1).OrderByDescending(tbl => tbl.ID).Take(3).ToList();
+        return listRecord;
+    }
+}
+ 
+<div class="content">
+    <div class="container">
+        <div class="hot_sp" style="padding-bottom: 10px;">
+            <h2 style="text-align:center;padding-top: 10px">
+                <a style="font-size: 28px;color: black;text-decoration: none" href="">Sản phẩm bán chạy</a>
+            </h2>
+            <div class="view-all" style="text-align:center;padding-top: -10px;">
+                <a style="color: black;text-decoration: none" href="">Xem thêm</a>
+            </div>
+        </div>
+    </div>
+    <!--Product-->
+    <div class="container" style="padding-bottom: 50px;">
+        @* product *@
+        <div class="row">
+            @* load product  *@
+            <style>
+                #wishlist {
+                    height: 40px;
+                    width: 40px;
+                    border-radius: 20px;
+                    background: red;
+                    position: absolute;
+                    top: 10px;
+                    text-align: center;
+                    left: 15px;
+                }
+                    #wishlist a {
+                        color: white;
+                        text-decoration: none;
+                    }
+            </style>
+            @{ List<ProductsRecord> listRecord = HotProduct(); }
+            @foreach (var item in listRecord)
+            {
+                <div class="col-md-3 col-sm-6 col-xs-6 col-6">
+
+                    <div class="product-block">
+
+                        <div class="product-img fade-box" style="padding: 12px; border: solid thin; text-align: center; position: relative; overflow: hidden;">
+
+                            <a href="/Products/Detail/@item.ID" title="@item.Name" class="img-resize">
+                                <img src="~/Upload/Products/@item.Photo" alt="@item.Name" class="lazyloaded">
+                                <img src="~/Upload/Products/@item.Photo" alt="@item.Name" class="lazyloaded">
+                            </a>
+                            
+                        </div>
+                        <div class="product-detail clearfix">
+                            <div class="pro-text">
+                                <a style=" color: black;font-size: 14px;text-decoration: none;" href="#" title="@item.Name" inspiration pack>
+                                    @item.Name
+                                </a>
+                            </div>
+                            <div class="pro-price">
+                                <p class="" style="text-decoration:line-through;"> @string.Format("{0:#,#.}", item.Price) ₫</p>
+                                <p class=""> @string.Format("{0:#,#.}", item.Price - (item.Price * item.Discount) / 100) ₫ </p>
+                                <p class="" style="display: flex; justify-content: center; ">
+                                    <a href="/Products/Star/@item.ID?star=1"><img src="~/Frontend/images/star.jpg"></a>
+                                    <a href="/Products/Star/@item.ID?star=2"><img src="~/Frontend/images/star.jpg"></a>
+                                    <a href="/Products/Star/@item.ID?star=3"><img src="~/Frontend/images/star.jpg"></a>
+                                    <a href="/Products/Star/@item.ID?star=4"><img src="~/Frontend/images/star.jpg"></a>
+                                    <a href="/Products/Star/@item.ID?star=5"><img src="~/Frontend/images/star.jpg"></a>
+                                </p>
+                            </div>
+                            <div class="action-btn">
+                                <form>
+                                    <a href="/Cart/Buy/@item.ID" class="btn" style=" margin: auto; border: solid thin; width: 100px; border-radius: 10px; background: darkturquoise; font-weight: bold; text-decoration: none;">Add to Cart</a>
+                                </form>
+                            </div>
+                            <div id="wishlist"><a href="/WishList/Create/@item.ID">Wish List</a></div>
+                        </div>
+                    </div>
+                </div>}
+        </div>
+    </div>
+</div>
+<section class="section wrapper-home-banner">
+    <div class="container-fluid" style="padding-bottom: 50px;">
+        <div class="row">
+            <div class="col-xs-12 col-sm-4 home-banner-pd">
+                <div class="block-banner-category">
+                    <a href="#" class="link-banner wrap-flex-align flex-column">
+                        <div class="fg-image fade-box">
+                            <img class="lazyloaded" src="Frontend/images/shoes/block_home_category1_grande.jpg" alt="Shoes">
+                        </div>
+                        <figcaption class="caption_banner site-animation">
+                            <p>Bộ sưu tập</p>
+                            <h2>
+                                Đại sứ thương hiệu
+                            </h2>
+                        </figcaption>
+                    </a>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-4 home-banner-pd">
+                <div class="block-banner-category">
+                    <a href="#" class="link-banner wrap-flex-align flex-column">
+                        <div class="fg-image fade-box">
+                            <img class="lazyloaded" src="Frontend/images/shoes/block_home_category2_grande.jpg" alt="Shoes">
+                        </div>
+                        <figcaption class="caption_banner site-animation">
+                            <p>Bộ sưu tập</p>
+                            <h2>
+                                Thương hiệu
+                            </h2>
+                        </figcaption>
+                    </a>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-4 home-banner-pd">
+                <div class="block-banner-category">
+                    <a href="#" class="link-banner wrap-flex-align flex-column">
+                        <div class="fg-image">
+                            <img class="lazyloaded" src="Frontend/images/shoes/block_home_category3_grande.jpg" alt="Shoes">
+                        </div>
+                        <figcaption class="caption_banner site-animation">
+                            <p></p>
+                            <h2>
+                                Blog
+                            </h2>
+                        </figcaption>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+@*<section>*@
+<div class="content">
+    <div class="container">
+        <div class="hot_sp">
+            <h2 style="text-align:center;">
+                <a style="font-size: 28px;color: black;text-decoration: none" href="">Danh sách sản phẩm </a>
+            </h2>
+            <div class="view-all" style="text-align:center;">
+                <a style="color: black;text-decoration: none" href="">Xem thêm</a>
+            </div>
+        </div>
+    </div>
+@*</div>*@
+<!--Category-->
+@{ List<CategoriesRecord> listCategories = Categories(); }
+
+@foreach (var itemCategory in listCategories)
+{
+    <h2>@itemCategory.Name</h2>
+    <div class="row">
+        
+            @{ List<ProductsRecord> listProducts = Products(itemCategory.ID);}
+            @foreach (var item in listProducts)
+            {
+                <div class="col-xs-6 col-md-2 col-sm-6 ">
+                <div class="product-block">
+                    <div class="product-img fade-box"  style="margin:0px 10px;border: solid thin; text-align: center; position: relative; overflow: hidden;">
+                        <a href="/Products/Detail/@item.ID" title="@item.Name" class="img-resize">
+                                <img src="~/Upload/Products/@item.Photo" title="@item.Name" alt="@item.Name">
+                                <img src="~/Upload/Products/@item.Photo" title="@item.Name" alt="@item.Name">
+                            </a>
+                        @*<img src="~/Upload/Products/@item.Photo" title="@item.Name" alt="@item.Name"  style="padding: 12px;" >*@
+                    </div>
+                    <div class="product-detail clearfix">
+                        <div class="pro-text">
+                            <a style=" color: black;font-size: 14px;text-decoration: none;" href="#" title="Adidas Ultraboost W" inspiration pack>
+                                @item.Name
+                            </a>
+                        </div>
+                        <div class="pro-price">
+                            <p class="" style="text-decoration:line-through;"> @string.Format("{0:#,#.}", item.Price) ₫</p>
+                            <p class=""> @string.Format("{0:#,#.}", item.Price - (item.Price * item.Discount) / 100) ₫ </p>
+                            <p class="" style="display: flex; justify-content: center; ">
+                                <a href="/Products/Star/@item.ID?star=1"><img src="~/Frontend/images/star.jpg"></a>
+                                <a href="/Products/Star/@item.ID?star=2"><img src="~/Frontend/images/star.jpg"></a>
+                                <a href="/Products/Star/@item.ID?star=3"><img src="~/Frontend/images/star.jpg"></a>
+                                <a href="/Products/Star/@item.ID?star=4"><img src="~/Frontend/images/star.jpg"></a>
+                                <a href="/Products/Star/@item.ID?star=5"><img src="~/Frontend/images/star.jpg"></a>
+                            </p>
+                        </div>
+                        <div>
+                            <a href="/Cart/Buy/@item.ID" class="btn" style=" margin: auto; border: solid thin; width: 100px; border-radius: 10px; background: darkturquoise; font-weight: bold; text-decoration: none;">Add to Cart</a>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            }
+        
+    </div>
+    <!--</div>
+    </div>-->
+    <!--Category-->
+    <!--</div>-->}
+</div>
+@*</section>*@
+
+<section class="">
+    <div class="content">
+        <div class="container">
+            <div class="hot_sp">
+                <h2 style="text-align:center;padding-top: 10px">
+                    <a style="font-size: 28px;color: black;text-decoration: none" href="">Bài viết mới nhất</a>
+                </h2>
+                <br />
+            </div>
+        </div>
+    </div>
+    <!--New-->
+ 
+
+    <div class="container">
+
+        <div class="row">
+            @{ List<NewsRecord> listNews = HotNews();}
+            @foreach (var item in listNews)
+            {
+                <div class="col-md-4">
+                    <div class="post_item">
+                        <div class="post_featured">
+                            <a href="#" title="Adidas EQT Cushion ADV">
+                                <img class="img-resize" style="padding-bottom:15px;" src="~/Upload/News/@item.Photo"
+                                     alt="@item.Name" title="@item.Name">
+                            </a>
+                        </div>
+                        <div class="pro-text">
+                            <span class="post_info_item">
+                            </span>
+                        </div>
+                        <div class="pro-text">
+                            <h3 class="post_title">
+                                <a style=" color: black;
+                                  font-size: 18px;text-decoration: none;" href="#" inspiration pack>
+                                   @Html.Raw(item.Description)
+                                </a>
+                            </h3>
+                        </div>
+                        <div style="text-align:center; padding-bottom: 30px;">
+                            <span>
+                                @Html.Raw(item.Content)
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>    
+</section>
+@*<section class="section wrapper-home-newsletter">
+    <div class="container-fluid">
+        <div class="content-newsletter">
+            <h2>Đăng ký</h2>
+            <p>
+                Đăng ký nhận bản tin của Runner Inn để cập nhật những sản phẩm mới, nhận thông tin ưu đãi đặc biệt và thông
+                tin
+                giảm giá khác.
+            </p>
+            <div class="form-newsletter">
+                <form action="" accept-charset="UTF-8" class="">
+                    <div class="form-group">
+                        <input type="hidden" id="contact_tags">
+                        <input required="" type="email" value="" placeholder="Nhập email của bạn" aria-label="Email Address"
+                               class="">
+                        <button type="submit" class=""><span>Gửi</span></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>*@
+<section class="section section-gallery">
+    <div class="">
+        <div class="hot_sp" style="padding-top: 70px;padding-bottom: 50px;">
+            <h2 style="text-align:center;padding-top: 10px">
+                <a style="font-size: 28px;color: black;text-decoration: none" href="">Khách hàng và Runner Inn</a>
+            </h2>
+        </div>
+        <div class="list-gallery clearfix">
+
+            <ul class="shoes-gp">
+                @* load product  *@
+                @{ List<ProductsRecord> list = CustemProduct(); }
+                @foreach (var item in list)
+                {
+                    <li>
+                        <div class="gallery_item">
+                            <img class="img-resize" src="~/Upload/Products/@item.Photo" alt="" style="border-image:fill;border-radius: 3px,4px; ">
+                        </div>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</section>
+<footer class="main-footer">
+    <div class="container">
+        <div class="">
+            <div class="row">
+                <div class="col-xs-12 col-sm-6 col-md-3">
+                    <div class="footer-col footer-block">
+                        <h4 class="footer-title">
+                            Giới thiệu
+                        </h4>
+                        <div class="footer-content">
+                            <p>
+                                Runner Inn trang mua sắm trực tuyến của thương hiệu giày, thời trang nam, nữ, phụ kiện, giúp bạn
+                                tiếp
+                                cận xu hướng thời trang mới nhất.
+                            </p>
+                            <div class="logo-footer">
+                                <img src="Frontend/images/logo-bct.png" alt="Bộ Công Thương">
+                            </div>
+                            <div class="social-list">
+                                <a href="#" class="fab fa-facebook"></a>
+                                <a href="#" class="fab fa-google"></a>
+                                <a href="#" class="fab fa-twitter"></a>
+                                <a href="#" class="fab fa-youtube"></a>
+                                <a href="#" class="fab fa-skype"></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-3">
+                    <div class="footer-col footer-link">
+                        <h4 class="footer-title">
+                            PHÁP LÝ &amp; CÂU HỎI
+                        </h4>
+                        <div class="footer-content toggle-footer">
+                            <ul>
+                                <li class="item">
+                                    <a href="#" title="Tìm kiếm">Tìm kiếm</a>
+                                </li>
+                                <li class="item">
+                                    <a href="#" title="Giới thiệu">Giới thiệu</a>
+                                </li>
+                                <li class="item">
+                                    <a href="#" title="Chính sách đổi trả">Chính sách đổi trả</a>
+                                </li>
+                                <li class="item">
+                                    <a href="#" title="Chính sách bảo mật">Chính sách bảo mật</a>
+                                </li>
+                                <li class="item">
+                                    <a href="#" title="Điều khoản dịch vụ">Điều khoản dịch vụ</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-3">
+                    <div class="footer-col footer-block">
+                        <h4 class="footer-title">
+                            Thông tin liên hệ
+                        </h4>
+                        <div class="footer-content toggle-footer">
+                            <ul>
+                                <li><span>Địa chỉ:</span> 145- Mai Dịch - Cầu Giấy - Hà Nội -Việt Nam </li>
+                                <li><span>Điện thoại:</span> +84 (028) 38800659</li>
+                                <li><span>Fax:</span> +84 (028) 38800659</li>
+                                <li><span>Mail:</span> contact@aziworld.com</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-3">
+                    <div class="footer-col footer-block">
+                        <h4 class="footer-title">
+                            FANPAGE
+                        </h4>
+                        <div class="footer-content">
+                            <div id="fb-root">
+                                <div class="footer-static-content">
+                                    <div class="fb-page" data-href="https://www.facebook.com/AziWorld-Viet-Nam-908555669481794/"
+                                         data-tabs="timeline" data-width="" data-height="215" data-small-header="false"
+                                         data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true">
+                                        <blockquote cite="https://www.facebook.com/AziWorld-Viet-Nam-908555669481794/"
+                                                    class="fb-xfbml-parse-ignore">
+                                            <a href="https://www.facebook.com/AziWorld-Viet-Nam-908555669481794/">AziWorld Viet Nam</a>
+                                        </blockquote>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="main-footer--copyright">
+        <div class="container">
+            <hr>
+            <div class="main-footer--border" style="text-align:center;padding-bottom: 15px;">
+                <p>
+                    Copyright © 2021 <a href="https://runner-inn.myharavan.com"> Runner Inn</a>. <a target="_blank" href="https://www.facebook.com/profile.php?id=100012174633118">Powered by Tiến Độ </a>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>

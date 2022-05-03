@@ -1,0 +1,76 @@
+﻿@{
+    //load file LayoutTrangChu.cshtml
+    Layout = "~/Views/Shared/LayoutTrangTrong.cshtml";
+}
+@* de phan trang thi using cac doi tuong sau *@
+@* dong 3 de su dung ham IPagedList *@
+@using X.PagedList
+@using X.PagedList.Mvc.Core
+
+<!--<!-- main -->
+<!--<h1>Tin tức</h1>
+<div class="wrapper-blog">-->
+    <!-- list news -->
+    <!--<div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-6 article" style="height:350px; overflow:hidden;">
+                <div style="width:100%; height:150px; overflow:hidden;">
+                    <a href="/News/Detail/@item.ID" class="image">
+                        <img style="width:100%;" src="~/Upload/News/@item.Photo" alt="@item.Name" title="@item.Name" class="img-responsive">
+                    </a>
+                </div>
+                <h3><a href="/News/Detail/@item.ID">@item.Name</a></h3>
+                <p class="desc">@Html.Raw(item.Description)</p>
+            </div>
+        }
+    </div>-->
+    <!-- end list news -->-->
+    <!--@* ham sau se thuc hien viec hien thi phan trang *@
+    @Html.PagedListPager((IPagedList)Model, page => Url.Action("Category", new { page = page }))
+</div>-->
+
+<!-- end main -->
+<div class="container">
+    <div class="row">
+
+        <div class="col-md-9 col-sm-12 col-xs-12">
+            <div class="heading-page clearfix">
+                <h1>Tin tức</h1>
+            </div>
+            <div class="blog-content">
+                <div class="list-article-content blog-posts">
+                    <!-- Begin: Nội dung blog -->
+                    <article class="blog-loop">
+                        @foreach (var item in Model)
+                        {
+                            <div class="blog-post row">
+                                <div class="col-md-4 col-xs-12 col-sm-12">
+                                    <a href="/News/Detail/@item.ID" class="blog-post-thumbnail" title="@item.Name" rel="nofollow">
+                                        <img src="~/Upload/News/@item.Photo" alt="@item.Name">
+                                    </a>
+                                </div>
+                                <div class="col-md-8 col-xs-12 col-sm-12">
+                                    <h3 class="blog-post-title">
+                                        <a href="/News/Detail/@item.ID" title="@item.Name">@Html.Raw(item.Description)</a>
+                                    </h3>
+
+                                    <p class="entry-content">@Html.Raw(item.Content)</p>
+                                </div>
+                            </div>
+                        }
+                    </article>
+
+                </div>
+                @*<div class="sortpagibar pagi clearfix text-center">
+            <div id="pagination" class="clearfix">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+
+                </div>
+            </div>
+        </div>*@
+                @Html.PagedListPager((IPagedList)Model, page => Url.Action("Category", new { page = page }))
+            </div>
+        </div>
+    </div>
+</div>

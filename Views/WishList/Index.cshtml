@@ -1,0 +1,39 @@
+﻿@{
+    //load file LayoutTrangChu.cshtml
+    Layout = "~/Views/Shared/LayoutTrangTrong.cshtml";
+}
+@using BTCK_PhanTienDo.Models
+@functions{
+}
+<div class="template-cart" style="margin:auto; max-width:1000px;">
+    <form action="/Cart/Update" method="post">
+        <div class="table-responsive">
+            <table class="table table-cart">
+                <thead>
+                    <tr>
+                        <th class="image">Ảnh sản phẩm</th>
+                        <th class="name">Tên sản phẩm</th>
+                        <th class="price">Giá bán lẻ</th>
+                      
+                        <th>Xóa</th>
+                    </tr>
+                </thead>
+                <tbody>
+       
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td><img src="~/Upload/Products/@item.Photo" class="img-responsive" style="max-width:20%" /></td>
+                            <td><a href="/Product/Detail/18">@item.Name</a></td>
+                            <td>@string.Format("{0:#,#.}", @item.Price)₫</td>
+                            <td><a href="/WishList/Remove/@item.ID" data-id="2479395"><i class="fa fa-trash"></i></a></td>
+                        </tr>
+                    }
+                </tbody>
+              
+
+            </table>
+        </div>
+    </form>
+  
+</div>

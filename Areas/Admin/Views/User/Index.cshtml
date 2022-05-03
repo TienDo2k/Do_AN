@@ -1,0 +1,51 @@
+﻿@{
+    //load file layout vao day
+    Layout = "~/Areas/Admin/Views/Share/_Layout.cshtml";
+}
+@* de phan trang thi using cac doi tuong sau *@
+@* dong 3 de su dung ham IPagedList *@
+@using X.PagedList
+@using X.PagedList.Mvc.Core
+<div class="col-md-12">
+    <div style="margin-bottom:5px;">
+        <a href="/Admin/User/Create" class="btn btn-primary">Thêm người dùng</a>
+    </div>
+    <div class="panel panel-primary">
+        <div class="panel-heading">List User</div>
+        <div class="panel-body">
+            <table class="table table-bordered table-hover">
+                <tr>
+                    <th>UserName</th>
+                    <th>Email</th>
+                    <th style="width:210px;"></th>
+                </tr>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.UserName</td>
+                        <td>@item.Email</td>
+                        <td style="text-align:center;">
+                            <a href="/Admin/User/Update/@item.ID" class="btn btn-primary  btn-xs">
+                                <i class="fa fa-pencil"></i>&nbsp;Sửa
+                            </a>&nbsp;
+                            <a href="/Admin/Permission/Index/@item.ID" class="btn btn-info  btn-xs">
+                                <i class="fa fa-search"></i>&nbsp;Phân quyền
+                            </a>&nbsp;
+                            <a href="/Admin/User/Delete/@item.ID" class="btn btn-danger  btn-xs" onclick="return window.confirm('Bạn muốn xóa à?');">
+                                <i class="fa fa-trash"></i> &nbsp;Xóa
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </table>
+            <style type="text/css">
+                .pagination {
+                    padding: 0px;
+                    margin: 0px;
+                }
+            </style>
+            @* ham sau se thuc hien viec hien thi phan trang *@
+            @Html.PagedListPager((IPagedList)Model, page => Url.Action("Index", new { page = page }))
+        </div>
+    </div>
+</div>

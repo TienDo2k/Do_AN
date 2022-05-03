@@ -1,0 +1,60 @@
+﻿
+@{
+    // load file layout vao day
+    Layout = "~/Areas/Admin/Views/Share/_Layout.cshtml";
+}
+@using BTCK_PhanTienDo.Models
+@functions{
+    public MyDbContext db = new MyDbContext();
+    public List<CategoriesRecord> GetCategories()
+    {
+        List<CategoriesRecord> listRecord = db.Categories.Where(tbl => tbl.ParentID == 0).OrderByDescending(tbl => tbl.ID).ToList();
+        return listRecord != null ? listRecord : new List<CategoriesRecord>();
+    }
+}
+<div class="col-md-12">
+    <div class="panel panel-primary">
+        <div class="panel-heading">Add edit Category</div>
+        <div class="panel-body">
+            <form method="post" action="">
+                <!-- rows -->
+                <div class="row" style="margin-top:5px;">
+                    <div class="col-md-2">Name</div>
+                    <div class="col-md-10">
+                        <input type="text" value="@if (Model != null) {<text>@Model["Name"]</text>}" name="name" class="form-control" required>
+                    </div>
+                </div>
+                <!-- end rows -->
+                <!-- end rows -->
+                <!-- end rows -->
+                <!-- rows -->
+                <!-- rows -->
+                <div class="row" style="margin-top:5px;">
+                    <div class="col-md-2">Thuoc danh muc nay </div>
+                    <div class="col-md-10">
+                        <select class=" form-control" style="width :250px" name="ParentID">
+                            <option value="0"></option>
+                            @{
+                                List<CategoriesRecord> listCategories = GetCategories();
+                            }
+                            @foreach (var item in listCategories)
+                            {
+                                <option @if (Model != null && Convert.ToInt32(Model["ParentID"]) == item.ID) { <text> selected</text>} value="@item.ID">@item.Name</option>
+                            }
+                        </select>
+
+                    </div>
+                </div>
+                <!-- end rows -->
+                <div class="row" style="margin-top:5px;">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-10">
+                        <input type="submit" value="Process" class="btn btn-primary">
+                    </div>
+                </div>
+                <!-- end rows -->
+            </form>
+        </div>
+    </div>
+</div>
+

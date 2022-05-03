@@ -1,0 +1,73 @@
+﻿@using BTCK_PhanTienDo.Models
+@functions{ 
+    public MyDbContext db = new MyDbContext();
+    public List<SlidesRecord> ListSlides()
+    {
+        List<SlidesRecord> listRecord = db.Slides.OrderByDescending(tbl => tbl.ID).ToList();
+        return listRecord;
+    }
+    //liet ke cac anh quang cao o vi tri canh slide show -> position = 1
+    public List<AdvRecord> Adv1()
+    {
+        List<AdvRecord> listRecord = db.Adv.Where(tbl => tbl.Position == 1).OrderByDescending(tbl => tbl.ID).ToList();
+        return listRecord;
+    }
+}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="Frontend/plugins/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="Frontend/plugins/animate/animate.min.css">
+    <link rel="stylesheet" href="Frontend/plugins/fontawesome/all.css">
+    <link rel="stylesheet" href="Frontend/plugins/webfonts/font.css">
+    <link rel="stylesheet" href="Frontend/css/owl.carousel.min.css" type="text/css">
+    <link rel="stylesheet" href="Frontend/css/owl.theme.default.min.css" type="text/css">
+    <link rel="stylesheet" href="Frontend/plugins/owl.carousel/owl.carousel.min.css" type="text/css">
+
+    <link rel="stylesheet" type="text/css" href="Frontend/css/style.css">
+    <link rel="stylesheet" href="Frontend/plugins/uikit/uikit.min.css" />
+    <script src="~/Frontend/plugins/jquery-3.4.1/jquery-3.4.1.min.js"></script>
+    <title>Runner</title>
+
+</head>
+
+<body>
+    <div class="header">
+        <a style="color: #ffffff;text-decoration: none;" href="/">
+            MIỄN PHÍ VẬN CHUYỂN VỚI ĐƠN HÀNG NỘI THÀNH > 300K
+            - ĐỔI TRẢ TRONG 30 NGÀY - ĐẢM BẢO CHẤT LƯỢNG
+        </a>
+    </div>
+
+    <!--Navbar-->
+    @*load menu ngang*@
+    @Html.Partial("~/Views/Shared/Header.cshtml")
+    <!-- Owl-Carousel -->
+    <div class="owl-carousel owl-theme owl-carousel-setting">
+        @{List<SlidesRecord> listRecord = ListSlides();
+            @foreach (var it in listRecord)
+            {
+                <div class="item"><img src="~/Upload/Slides/@it.Photo" class="d-block w-100" alt="..."></div>
+            }
+        }
+    </div>    
+
+    <!--Content-->
+    @RenderBody()
+    <!--Content-->
+    <script async defer crossorigin="anonymous" src="Frontend/plugins/sdk.js"></script>
+    <script src="~/Frontend/plugins/jquery-3.4.1/jquery-3.4.1.min.js"></script>
+    <script src="Frontend/plugins/bootstrap/popper.min.js"></script>
+    <script src="Frontend/plugins/bootstrap/bootstrap.min.js"></script>
+    <script src="Frontend/plugins/owl.carousel/owl.carousel.min.js" ></script>
+    <script src="Frontend/js/home.js"></script>
+    <script src="Frontend/js/script.js"></script>
+    <script src="Frontend/plugins/uikit/uikit.min.js"></script>
+    <script src="Frontend/plugins/uikit/uikit-icons.min.js"></script>
+    
+</body>
+
+</html>

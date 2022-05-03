@@ -1,0 +1,339 @@
+﻿@using BTCK_PhanTienDo.Models;
+@using Microsoft.AspNetCore.Http;
+@functions{
+    public MyDbContext db = new MyDbContext();
+    public List<CategoriesRecord> Categories()
+    {
+        List<CategoriesRecord> listRecord = db.Categories.Where(tbl => tbl.ParentID == 0).Where(x=>x.Name!="gallery").OrderByDescending(tbl => tbl.ID).ToList();
+        return listRecord;
+    }
+    public List<CategoriesRecord> CategoriesSub(int CategoryID)
+    {
+        List<CategoriesRecord> listRecord = db.Categories.Where(tbl => tbl.ParentID == CategoryID).OrderByDescending(tbl => tbl.ID).ToList();
+        return listRecord;
+    }
+}
+<nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
+
+    <div class="container">
+        <a class="navbar-brand" href="index.html">
+            <img src="Frontend/images/logo.png" class="logo-top" alt="">
+        </a>
+        <div class="desk-menu collapse navbar-collapse justify-content-md-center" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/">TRANG CHỦ</a>
+                </li>
+                @*<li class="nav-item">
+                    <a class="nav-link" href="/">BỘ SƯU TẬP</a>
+                </li>*@
+                <li class="nav-item lisanpham">
+                    <a class="nav-link" href="/">
+                        SẢN PHẨM
+                        <i class="fa fa-chevron-down" aria-hidden="true"></i>
+                    </a>
+                    <ul class="sub_menu">
+                        <li class="">
+
+                            <ul class="list-unstyled level1">
+                                @{
+                                    List<CategoriesRecord> listCategories = Categories();
+                                }
+                                @foreach (var item in listCategories)
+                                {
+                                    <li><a href="/Products/Category/@item.ID">@item.Name</a></li>
+                                    List<CategoriesRecord> listCategoriesSub = CategoriesSub(item.ID);
+                                    foreach (var itemSub in listCategoriesSub)
+                                    {
+                                        <li style="padding-left:20px;"><a href="/Products/Category/@itemSub.ID">@itemSub.Name</a></li>
+                                    }
+                                }
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+             
+                <li class="nav-item">
+                    <a class="nav-link" href="/News">BLOG</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/Contact">LIÊN HỆ</a>
+                </li>
+            </ul>
+        </div>
+        <div id="offcanvas-flip1" uk-offcanvas="flip: true; overlay: true">
+            <div class="uk-offcanvas-bar" style="background: white;
+        width: 100%;">
+
+                <button class="uk-offcanvas-close" style="color:#272727" type="button" uk-close></button>
+                <h3 style="font-size: 14px;
+          color: #272727;
+          text-transform: uppercase;
+          margin: 3px 0 30px 0;
+          font-weight: 500; letter-spacing: 2px;">
+                    MENU
+                </h3>
+                <div class="justify-content-md-center">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="View/Home/Index.cshtml">TRANG CHỦ</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="Product.html">BỘ SƯU TẬP</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle aaaa" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                               aria-haspopup="true" aria-expanded="false">
+                                <p>SẢN PHẨM</p>
+                                <i class="fa fa-angle-double-right"></i>
+
+                            </a>
+                            @*<div class="dropdown-menu" aria-labelledby="navbarDropdown" style="border:0;">
+                            <a class="dropdown-item" href="detailproduct.html" title="Sản phẩm - Style 1">Sản phẩm - Style 1</a>*@
+
+                            @*</div>*@
+
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="introduce.html">GIỚI THIỆU</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/New">BLOG</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Contact">LIÊN HỆ</a>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+
+        @*//-- tìm kiếm*@
+        <script language="javascript">
+            //---
+            function search() {
+                var key = document.getElementById("key").value;
+                //di chuyen den url tim kiem
+                location.href = "/Search/SearchProducts/?key=" + key;
+            }
+            //---
+            //bat su kien keyup cua id=key
+            $(document).ready(function () {
+                
+                $("#key").keyup(function () {
+                    //lay gia tri cua textbox co id=key
+                    var key = $("#key").val();
+
+                    if (key != "") {
+                        $(".smart-search-list").attr("style", "display:block");
+                        //---
+                        $.ajax({
+                            
+                            url: "/Search/AJax?key=" + key,
+                            success: function (result) {
+                                //lam rong danh sach cac the li
+                                
+                                $(".smart-search-list ul").empty();
+                                //them ket qua vao the li
+                                $(".smart-search-list ul").append(result);
+                            }
+                        });
+                        //---
+                    }
+                    else {
+                        $(".smart-search-list").attr("style", "display:none");
+                    }
+                });
+            });
+            //---
+        </script>
+        <div id="offcanvas-flip" uk-offcanvas="flip: true; overlay: true">
+            <div class="uk-offcanvas-bar" style="    background: white;
+            width: 350px;">
+
+                <button class="uk-offcanvas-close" style="color:#272727" type="button" uk-close></button>
+
+                <h3 style="font-size: 14px;
+                color: #272727;
+                text-transform: uppercase;
+                margin: 3px 0 30px 0;
+                font-weight: 500; letter-spacing: 2px;">
+                    Tìm kiếm
+                </h3>
+                <div class="search-box wpo-wrapper-search">
+                    <div class="searchform searchform-categoris ultimate-search">
+                        <div class="wpo-search-inner" style="display:flex">
+                            <input type="hidden" name="type" value="">
+                            <input id="key" value="" maxlength="40" autocomplete="off"
+                                   class="searchinput input-search search-input" type="text" size="30"
+                                   placeholder="Tìm kiếm sản phẩm...">
+                            <button type="submit" class="btn" style="margin-left:5px;">
+                                <i style="font-weight:bold" class="fas fa-search" onclick="return search();"></i>
+                            </button>
+                        </div>
+                        <div class="smart-search-list">
+                            <ul>
+                                <li><a href="#"><img src="/Upload/Products/132713905645952990_gallery_item_5.jpg" /> Nike </a></li>
+                                <li><a href="#"><img src="/Upload/Products/132713905645952990_gallery_item_5.jpg" /> Nike</a></li>
+                                <li><a href="#"><img src="/Upload/Products/132713905645952990_gallery_item_5.jpg" /> Nike</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <style>
+            .wpo-search-inner {
+                position: relative;
+            }
+
+            .smart-search-list {
+                margin-top: 1px;
+                margin-left: -37px;
+                position: absolute;
+                width: 98%;
+                background: #1e87f063;
+                color: black;
+                z-index: 1;
+                display: none;
+            }
+
+                .smart-search-list img {
+                    width: 70px;
+                    margin-right: 5px;
+                }
+
+                .smart-search-list ul {
+                    padding: 0px;
+                    margin: 0px;
+                    list-style: none;
+                }
+
+                .smart-search-list li {
+                    border-bottom: 1px solid #dddddd;
+                }
+        </style>
+        <div id="offcanvas-flip2" uk-offcanvas="flip: true; overlay: true">
+            <div class="uk-offcanvas-bar" style="    background: white;
+            width: 350px;">
+
+                <button class="uk-offcanvas-close" style="color:#272727" type="button" uk-close></button>
+
+                <h3 style="font-size: 14px;
+                color: #272727;
+                text-transform: uppercase;
+                margin: 3px 0 30px 0;
+                font-weight: 500; letter-spacing: 2px;">
+                    Giỏ hàng
+                </h3>
+                @* co the using thu vien o day de thuc hien cac ham ben duoi no *@
+                @using Microsoft.AspNetCore.Http
+                @{
+                    List<Item> _cart = Cart.GetCart(Context.Session);
+                    int intSoLuongSanPham = 0;
+                    if (_cart != null)
+                        intSoLuongSanPham = _cart.Count;
+                }
+                <div class="site-nav-container-last" style="color:#272727">
+                    <div class="cart-view clearfix">
+                        @if (_cart != null)
+                        {
+                            foreach (var item in _cart)
+                            {
+                                //tinh gia san pham sau khi da giam gia
+                                double price = item.ProductItem.Price - (item.ProductItem.Price * (item.ProductItem.Discount) / 100);
+                                <table id="cart-view">
+                                    <tbody>
+                                        <tr class="item_1">
+                                            <td class="img">
+                                                <a href="/Products/Detail/@item.ProductItem.ID" title="@item.ProductItem.Name">
+                                                    <img src="/Upload/Products/@item.ProductItem.Photo" alt="@item.ProductItem.Name">
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a class="pro-title-view" style="color: #272727" href=""
+                                                   title="@item.ProductItem.Name">@item.ProductItem.Name</a>
+                                                <span class="variant">Tím / 36</span>
+                                                <span class="pro-quantity-view">@item.Quantity </span>
+                                                <span class="pro-price-view"> @string.Format("{0:#,#.}", item.Quantity * price)₫</span>
+                                                <span class="remove_link remove-cart">
+                                                    <a href="/Cart/Remove/@item.ProductItem.ID">
+                                                        <i style="color: #272727;"
+                                                           class="fas fa-times"></i>
+                                                    </a>
+                                                </span>
+                                            </td>
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <span class="line"></span>
+                                <table class="table-total">
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            }
+
+                        }
+                        <table class="table-total">
+                            <tbody>
+                                <tr>
+                                    <td class="distance-td"><a href="/cart" class="linktocart button dark">Xem giỏ hàng</a></td>
+                                    @if (_cart != null)
+                                    {
+                                        <td><a href="/Cart/Checkout" class="linktocheckout button dark">Thanh toán</a></td>
+                                    }
+                                    </tr>
+                            </tbody>
+                        </table>
+                        <a href="/Cart/DetailBill" target="_blank" class="button btn-check" style="text-decoration:none;">
+                            <span>
+                               Đơn đã mua
+                            </span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="icon-ol">
+            @if (Context.Session.GetString("email") != null)
+            {
+                <text>
+                    <span style="font-weight: 400; font-size: 12px;">Xin chào @Context.Session.GetString("email")</span>
+                    &nbsp;&nbsp;
+                    <a style="font-weight: 400; font-size: 12px;" href="/Account/Logout">
+                        Đăng Xuất
+                    </a>
+                </text>
+            }
+            else
+            {
+                <text>
+                    <a style="color: #272727" href="/Account/Login" name="Đăng ký">
+                        Đăng nhập
+                    </a>
+                    &nbsp;&nbsp;
+                    <a style="color: #272727" href="/Account/Register" name="Đăng ký">
+                        Đăng ký
+                    </a>
+                </text>
+            }
+
+            <a href="#" class="" uk-toggle="target: #offcanvas-flip">
+                <i class="fas fa-search" style="color: black"></i>
+            </a>
+            @* đây là giỏ hàng mini  *@
+            <a style="color: #272727" href="#" uk-toggle="target: #offcanvas-flip2">
+                <i class="fas fa-shopping-cart"></i>
+            </a>
+            <button class="navbar-toggler" type="button" uk-toggle="target: #offcanvas-flip1" data-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+   
+</nav>

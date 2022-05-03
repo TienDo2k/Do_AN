@@ -1,0 +1,355 @@
+﻿@{
+    //load file LayoutTrangChu.cshtml
+    Layout = "~/Views/Shared/LayoutTrangTrong.cshtml";
+}
+@using BTCK_PhanTienDo.Models
+@functions{
+    public MyDbContext db = new MyDbContext();
+    public string GetCategory(int intCategoryID)
+    {
+        CategoriesRecord record = db.Categories.Where(tbl => tbl.ID == intCategoryID).FirstOrDefault();
+        return record != null ? record.Name : "";
+    }
+    // lay so sao
+    public int GetStar(int intProductID, int intStar)
+    {
+        List<RatingRecord> listRecord = db.Rating.Where(tbl => tbl.ProductID == intProductID && tbl.Star == intStar).ToList();
+        return listRecord.Count;
+    }
+}
+
+    <div class="container">
+        <div class="row product-detail-wrapper">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="row product-detail-main pr_style_01">
+                    <div class="col-md-7 col-sm-12 col-xs-12">
+                        <div class="product-gallery">
+                            <div class="product-gallery__thumbs-container hidden-sm hidden-xs">
+                                <div class="product-gallery__thumbs thumb-fix">
+                                   
+                                    <div class="product-gallery__thumb  active" id="imgg1">
+            <a class="product-gallery__thumb-placeholder" href="javascript:void(0);"
+               data-image="/Upload/Products/@Model.Photo" data-zoom-image="/Upload/Products/@Model.Photo">
+                <img src="/Upload/Products/@Model.Photo" data-image="/Upload/Products/@Model.Photo"
+                     alt="@Model.Name" grape="">
+            </a>
+        </div>
+                                    @*<div class="product-gallery__thumb  active" id="imgg1">
+                                        <a class="product-gallery__thumb-placeholder" href="javascript:void(0);"
+                                           data-image="~/Frontend/images/detailproduct/1.jpg" data-zoom-image="~/Frontend/images/detailproduct/1.jpg">
+                                            <img src=" ~/Upload/Products/@Model.Photo" data-image="~/Frontend/images/detailproduct/1.jpg"
+                                                 alt="@Model.name" grape="">
+                                        </a>
+                                    </div>*@
+
+
+
+                                </div>
+                            </div>
+                            <div class="product-image-detail box__product-gallery scroll hidden-xs">
+                                <ul id="sliderproduct" class="site-box-content slide_product">
+                                    <li class="product-gallery-item gallery-item current " id="imgg1a">
+                                        <img class="product-image-feature " src="/Upload/Products/@Model.Photo"
+                                             alt="@Model.Name" grape="">
+                                    </li>
+                                </ul>
+                                <div class="product-image__button">
+                                    <div id="product-zoom-in" class="product-zoom
+                        icon-pr-fix" aria-label="Zoom in" title="Zoom in">
+                                        <span class="zoom-in" aria-hidden="true">
+                                            <svg version="1.1" xmlns="http://www.w3.org/2000/svg"
+                                                 xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 36 36" style="enable-background:new 0 0 36 36; width:30px; height: 30px;" xml:space="preserve">
+                                            <polyline points="6,14 9,11 14,16 16,14 11,9
+                                               14,6 6,6">
+                            </polyline>
+                                            <polyline points="22,6 25,9 20,14 22,16 27,11
+                                               30,14 30,6">
+                            </polyline>
+                                            <polyline points="30,22 27,25 22,20 20,22
+                                               25,27 22,30 30,30">
+                            </polyline>
+                                            <polyline points="14,30 11,27 16,22 14,20 9,25
+                                               6,22 6,30">
+                            </polyline>
+                          </svg>
+                                        </span>
+                                    </div>
+                                    <div class="gallery-index icon-pr-fix">
+                                        <span class="current">1</span>
+                                        / <span class="total">8</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product-gallery-slide">
+                            <div class="owl-carousel owl-theme owl-product-gallery-slide" >
+                            
+                                <div class="item">
+                                    <div class="product-gallery__thumb  " id="imgg1">
+                                        <a class="product-gallery__thumb-placeholder" href="javascript:void(0);"
+                                           data-image="/Upload/Products/@Model.Photo" data-zoom-image="/Upload/Products/@Model.Photo">
+                                            <img src="/Upload/Products/@Model.Photo" data-image="/Upload/Products/@Model.Photo"
+                                                 alt="@Model.Name" grape="">
+                                        </a>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                  
+                    </div>
+                    <div class="col-md-5 col-sm-12 col-xs-12
+                product-content-desc" id="detail-product">
+                        <div class="product-content-desc-1">
+                            <div class="product-title">
+                                <h1>@Model.Name</h1>
+                                <span id="pro_sku">@Model.ID</span>
+                            </div>
+                            <div class="product-price" id="price-preview"><span class="pro-price">@string.Format("{0:#,#.}", Model.Price)₫</span></div>
+                            <form id="add-item-form" action="/cart/add" method="post" class="variants clearfix">
+                                @*<div class="select clearfix">
+                                    <div class="selector-wrapper">
+                                        <label for="product-select-option-0">Màu sắc</label><span class="custom-dropdown custom-dropdown--white">
+                                            <select class="single-option-selector
+                            custom-dropdown__select
+                            custom-dropdown__select--white" data-option="option1" id="product-select-option-0">
+                                                <option value="Tím">Tím</option>
+                                                <option value="Xanh">Xanh</option>
+                                            </select>
+                                        </span>
+                                    </div>
+                                    <div class="selector-wrapper">
+                                        <label for="product-select-option-1">Kích thước</label>
+                                        <span class="custom-dropdown custom-dropdown--white">
+                                            <select class="single-option-selector
+                            custom-dropdown__select
+                            custom-dropdown__select--white" data-option="option2" id="product-select-option-1">
+                                                <option value="36">36</option>
+                                                <option value="37">37</option>
+                                                <option value="38">38</option>
+                                                <option value="35">35</option>
+                                            </select>
+                                        </span>
+                                    </div>
+         
+                                </div>*@
+                                @*<div class="select-swatch clearfix">
+                  <div id="variant-swatch-0" class="swatch clearfix" data-option="option1" data-option-index="0">
+
+
+                      <div class="header" style="background: white;
+        color: #272727;"><span>Tím</span></div>
+
+                      <div class="select-swap">
+                          <div data-value="Tím" class="n-sd swatch-element
+          color tim">
+                              <input class="variant-0" id="swatch-0-tim" type="radio" name="option1" value="Tím"
+                                     data-vhandle="tim" checked="">
+                              <label class="tim sd" for="swatch-0-tim">
+                                  <span>Tím</span>
+                              </label>
+
+                          </div>
+                          <div data-value="Xanh" class="n-sd swatch-element
+          color xanh">
+                              <input class="variant-0" id="swatch-0-xanh" type="radio" name="option1" value="Xanh"
+                                     data-vhandle="xanh">
+
+
+                              <label class="xanh" for="swatch-0-xanh">
+                                  <span>Xanh</span>
+                              </label>
+
+                          </div>
+                      </div>
+                  </div>
+                  <div id="variant-swatch-1" class="swatch clearfix" data-option="option2" data-option-index="1">
+
+
+                      <div class="select-swap">
+                          <div data-value="36" class="n-sd swatch-element
+          36">
+                              <input class="variant-1" id="swatch-1-36" type="radio" name="option2" value="36"
+                                     data-vhandle="36" checked="">
+
+                              <label for="swatch-1-36" class="sd">
+                                  <span>36</span>
+                              </label>
+
+                          </div>
+                          <div data-value="37" class="n-sd swatch-element
+          37">
+                              <input class="variant-1" id="swatch-1-37" type="radio" name="option2" value="37"
+                                     data-vhandle="37">
+
+                              <label for="swatch-1-37">
+                                  <span>37</span>
+                              </label>
+
+                          </div>
+                          <div data-value="38" class="n-sd swatch-element
+          38">
+                              <input class="variant-1" id="swatch-1-38" type="radio" name="option2" value="38"
+                                     data-vhandle="38">
+
+                              <label for="swatch-1-38">
+                                  <span>38</span>
+                              </label>
+
+                          </div>
+                          <div data-value="35" class="n-sd swatch-element 35
+          soldout">
+                              <input class="variant-1" id="swatch-1-35" type="radio" name="option2" value="35"
+                                     data-vhandle="35" disabled="">
+
+                              <label for="swatch-1-35">
+                                  <span>35</span>
+                              </label>
+
+                          </div>
+                      </div>
+                  </div>
+              </div>*@
+                                <div class="selector-actions">
+                                    <div class="quantity-area clearfix">
+                                        <input type="button" value="-" onclick="minusQuantity()" class="qty-btn">
+                                        <input type="text" id="quantity" name="quantity" value="1" min="1" class="quantity-selector">
+                                        <input type="button" value="+" onclick="plusQuantity()" class="qty-btn">
+                                    </div>
+                                    <div class="wrap-addcart clearfix">
+                                        <div class="row-flex">
+                                            <a type="button" href="/Cart/Buy/@Model.ID" class="button btn-addtocart addtocart-modal style="display: block;text-decoration:none"">
+                                                Thêm
+                                                vào giỏ hàng
+                                            </a>
+                                         
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <!--<div class="product-action-bottom visible-xs">
+      <div class="input-bottom">
+        <input id="quan-input" type="number" value="1" min="1">
+      </div>
+      <button type="button" id="add-to-cartbottom"
+        class="add-to-cartProduct add-cart-bottom button addtocart-modal" name="add">Thêm vào
+        giỏ</button>
+    </div>-->
+                                <div style="border: 1px solid #dddddd; margin-top: 15px; display: flex;">
+                                    <h4 style="padding-left: 10px;">Rating</h4>
+                                    <table style="width: 100%;">
+                                        <tr>
+                                            <td style="width: 80%; padding-left: 10px;"><img src="~/Frontend/images/star.jpg"></td>
+                                            <td><span class="label label-primary">@GetStar(Model.ID, 1) vote</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="width: 80%; padding-left: 10px;"><img src="~/Frontend/images/star.jpg"> <img src="~/Frontend/images/star.jpg"></td>
+                                            <td><span class="label label-warning">@GetStar(Model.ID, 2) vote</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="width: 80%; padding-left: 10px;"><img src="~/Frontend/images/star.jpg"> <img src="~/Frontend/images/star.jpg"> <img src="~/Frontend/images/star.jpg"></td>
+                                            <td><span class="label label-danger">@GetStar(Model.ID, 3) vote</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="width: 80%; padding-left: 10px;"><img src="~/Frontend/images/star.jpg"> <img src="~/Frontend/images/star.jpg"> <img src="~/Frontend/images/star.jpg"> <img src="~/Frontend/images/star.jpg"></td>
+                                            <td><span class="label label-info">@GetStar(Model.ID, 4) vote</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="width: 80%; padding-left: 10px;"><img src="~/Frontend/images/star.jpg"> <img src="~/Frontend/images/star.jpg"> <img src="~/Frontend/images/star.jpg"> <img src="~/Frontend/images/star.jpg"> <img src="~/Frontend/images/star.jpg"></td>
+                                            <td><span class="label label-success">@GetStar(Model.ID, 5) vote</span></td>
+                                        </tr>
+                                    </table>
+                                    <br>
+                                </div>
+                            </form>
+                            <div class="product-description">
+                                <div class="title-bl">
+                                    <h2>Mô tả</h2>
+                                </div>
+                                <div class="description-content">
+                                    <div class="description-productdetail">
+                                        @Html.Raw(Model.Description)
+                                        @Html.Raw(Model.Content)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--<div class="list-productRelated clearfix">
+    <div class="heading-title text-center">
+        <h2>Sản phẩm liên quan</h2>
+    </div>
+    <div class="container">
+        <div class="row">-->
+                @*<div class="col-md-3 col-sm-6 col-xs-6 col-6">
+                <div class="product-block">
+                    <div class="product-img fade-box">
+                        <a href="#" title="Adidas EQT Cushion ADV" class="img-resize">
+                            <img src="images/shoes/800502_01_e92c3b2bb8764b52a791846d84a3a360_grande.jpg"
+                                 alt="Adidas EQT Cushion ADV" class="lazyloaded">
+                            <img src="images/shoes/shoes fade 1.jpg" alt="Adidas EQT Cushion ADV" class="lazyloaded">
+                        </a>
+
+                    </div>
+                    <div class="product-detail clearfix">
+                        <div class="pro-text">
+                            <a style="color: black;
+                font-size: 14px;text-decoration: none;" href="#" title="Adidas EQT Cushion ADV" inspiration
+                               pack>
+                                Adidas EQT Cushion ADV "North America"
+                            </a>
+                        </div>
+                        <div class="pro-price">
+                            <p class="">7,000,000₫</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <!--@{ List<ProductsRecord> listProducts = Products(itemCategory.ID);}
+
+                </div>
+            </div>
+        </div>-->*@
+                <!-- zoom -->
+
+            </div>
+        </div>
+    </div>
+    <div class="product-zoom11">
+        <div class="product-zom">
+            <div class="divclose">
+                <i class="fa fa-times-circle"></i>
+            </div>
+            <div class="owl-carousel owl-theme owl-product1">
+
+                <div class="item">
+                    <img src="/Upload/Products/@Model.Photo" alt="">
+                </div>
+                <div class="item">
+                    <img src="/Upload/Products/@Model.Photo" alt="">
+                </div>
+                <div class="item">
+                    <img src="/Upload/Products/@Model.Photo" alt="">
+                </div>
+                <div class="item">
+                    <img src="/Upload/Products/@Model.Photo" alt="">
+                </div>
+                <div class="item">
+                    <img src="/Upload/Products/@Model.Photo" alt="">
+                </div>
+                <div class="item">
+                    <img src="/Upload/Products/@Model.Photo" alt="">
+                </div>
+                <div class="item">
+                    <img src="/Upload/Products/@Model.Photo" alt="">
+                </div>
+                <div class="item">
+                    <img src="/Upload/Products/@Model.Photo" alt="">
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>

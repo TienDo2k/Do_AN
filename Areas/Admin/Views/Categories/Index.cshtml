@@ -1,0 +1,69 @@
+﻿@{
+    //load file layout vao day
+    Layout = "~/Areas/Admin/Views/Share/_Layout.cshtml";
+}
+@* su dung doi tuong DataTable, DataRow (DataTable bao gom nhieu DataRow) *@
+@using System.Data
+@using BTCK_PhanTienDo.Models
+@* ham se ddatwj trong từ khóa Functions *@
+@functions{
+    //public GesSubCategories(int Category_id) { }
+    public MyDbContext db = new MyDbContext();
+    public List<CategoriesRecord> GetSubCategories(int category_id)
+    {
+        List<CategoriesRecord> listRecord = db.Categories.Where(tbl => tbl.ParentID == category_id).ToList();
+        return listRecord != null ? listRecord : new List<CategoriesRecord>();
+    }
+}
+<div class="col-md-12">
+    <div style="margin-bottom:5px;">
+        <a href="/Admin/Categories/Create" class="btn btn-primary">Add Category</a>
+    </div>
+    <div class="panel panel-primary">
+        <div class="panel-heading">List Category</div>
+        <div class="panel-body">
+            <table class="table table-bordered table-hover">
+                <tr>
+                    <th>Name</th>
+                    <th style="width:100px;"></th>
+                </tr>
+                @foreach (DataRow item in Model.Rows)
+                {
+                    <tr>
+                        <td>@item["Name"]</td>
+                        <td style="text-align:center;">
+                            <a href="/Admin/Categories/Update/@item["ID"]">Edit</a>&nbsp;
+                            <a href="/Admin/Categories/Delete/@item["ID"]" onclick="return window.confirm('Are you sure?');">Delete</a>
+                        </td>
+                    </tr>
+                    // load các danh muc cap con
+                    List<CategoriesRecord> listSubCategories = GetSubCategories(Convert.ToInt32(item["ID"]));
+                    foreach (var itemSub in listSubCategories)
+                    {
+                        <tr>
+                            <td style="padding-left:40px">@itemSub.Name</td>
+                            <td style="text-align:center;">
+                                <a href="/Admin/Categories/Update/@itemSub.ID">Edit</a>&nbsp;
+                                <a href="/Admin/Categories/Delete/@itemSub.ID" onclick="return window.confirm('Are you sure?');">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                }
+            </table>
+
+            <style type="text/css">
+                .pagination {
+                    padding: 0px;
+                    margin: 0px;
+                }
+            </style>
+            <ul class="pagination">
+                <li class="page-item"><a class="page-link" href="#">Page</a></li>
+                @for (int i = 1; i <= Convert.ToInt32(ViewBag.numPage); i++)
+                {
+                    <li class="page-item"><a class="page-link" href="/Admin/Categories?page=@i">@i</a></li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>

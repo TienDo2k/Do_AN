@@ -1,0 +1,104 @@
+﻿@using BTCK_PhanTienDo.Models
+@using Microsoft.AspNetCore.Http;
+@{
+    Layout = "~/Views/Shared/LayoutTrangTrong.cshtml";
+}
+@functions{
+    MyDbContext db = new MyDbContext();
+    public CustomersRecord GetCustomer(int id)
+    {
+        CustomersRecord record = db.Customers.Where(c => c.ID == id).FirstOrDefault();
+        return record != null ? record : new CustomersRecord();
+    }
+    public OrdersRecord GetOrder(int idOrder)
+    {
+        OrdersRecord record = db.Orders.Where(o => o.ID == idOrder).FirstOrDefault();
+        return record != null ? record : new OrdersRecord();
+    }
+    public ProductsRecord GetProduct(int idProduct)
+    {
+        ProductsRecord record = db.Products.Where(p => p.ID == idProduct).FirstOrDefault();
+        return record != null ? record : new ProductsRecord();
+    }
+}
+<div class="col-md-12">
+    
+     <a href="/" class="button black">Quay lại </a>
+    <div class="panel panel-primary">
+       <h2> Quý khách đã đặt hàng thành công. Sản phẩm sẽ được giao trong vòng 7 ngày .</h2>
+        <div class="panel-body">
+            @*thông tin khách hàng*@
+            @{
+           
+                CustomersRecord customer = GetCustomer(ViewBag.idkh);
+            }
+            <table class="table table-bordered table-hover" border=0>
+                <tr>
+                    <th>Tên khách hàng : </th>
+                    <td>@customer.Name</td>
+                </tr>
+                    
+                    <tr>
+                    <th>Địa chỉ email: </th>
+                    <td>@customer.Email</td>
+                </tr>
+                <tr>
+                    <th>Địa chỉ nhận hàng :</th>
+                    <td>@customer.Address</td>
+                </tr> 
+                <tr>
+                    <th>Số điện thoại : </th>
+                    <td>@customer.Phone</td>
+                </tr>
+
+           
+            </table>
+            @* thông tin sảng phẩm *@
+           
+
+            <table class="table table-bordered table-hover" border="0">
+                <tr>
+                    <th>Tên sản phẩm </th>
+
+                    <th> Ảnh </th>
+
+                    <th>Giá bán </th>
+
+                    <th>Số lượng mua</th>
+                    <th>Hành động</th>
+                </tr>
+                @if (Model.Count > 0)
+                {
+                    @foreach (var item in Model)
+                    {
+
+                        ProductsRecord record = GetProduct(item.ProductID);
+
+            <tr>
+                <td>@record.Name</td>
+                <td><img src="~/Upload/Products/@record.Photo" style="width:100px;" /></td>
+
+                <td>@string.Format("{0:#,#.}", record.Price - (record.Price * record.Discount / 100))</td>
+
+                <td>@item.Quantity</td>
+               
+                <td><a href="/Cart/deleteBill/@item.ID"><i class="fa fa-trash"></i></a></td>
+               
+            </tr>
+
+
+                    }
+                }
+
+
+            </table>
+            <style type="text/css">
+                .pagination {
+                    padding: 0px;
+                    margin: 0px;
+                }
+            </style>
+
+        </div>
+    </div>
+</div>

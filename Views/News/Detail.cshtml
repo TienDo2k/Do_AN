@@ -1,0 +1,18 @@
+﻿@{
+    //load file LayoutTrangChu.cshtml
+    Layout = "~/Views/Shared/LayoutTrangTrong.cshtml";
+}
+@using BTCK_PhanTienDo.Models
+@functions{
+}
+
+
+<div class="middle">
+
+<h3>@Model.Name</h3>
+<img src="~/Upload/News/@Model.Photo" style="width:50%;" />
+<p>@Html.Raw(Model.Description)</p>
+<p>@Html.Raw(Model.Content)</p>
+
+<div class="fb-comments" data-href="https://devpro.edu.vn" data-width="" data-numposts="5"></div></div>
+

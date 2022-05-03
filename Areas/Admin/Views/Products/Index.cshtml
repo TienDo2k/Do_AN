@@ -1,0 +1,79 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@*de phan trang thi using cac doi tuong sau *@
+@*dong 3 de su dung ham IPagedList *@
+@using X.PagedList
+@using X.PagedList.Mvc.Core
+@* doi tuong thao tac voi file *@
+@using System.IO
+@using BTCK_PhanTienDo.Models
+@functions{
+    public MyDbContext db = new MyDbContext();
+    public string GetCategory(int _CategoryID)
+    {
+        CategoriesRecord record = db.Categories.Where(tbl => tbl.ID == _CategoryID).FirstOrDefault();
+        return record.Name != null ? record.Name : "";
+    }
+
+}
+@{
+    // load file layout vao day
+    Layout = "~/Areas/Admin/Views/Share/_Layout.cshtml";
+}
+@* ddinh nghia kieu du lieu phan model  *@
+<div class="col-md-12">
+    <div style="margin-bottom:5px;">
+        <a href="/Admin/Products/Create" class="btn btn-primary">Add Produect</a>
+    </div>
+    <div class="panel panel-primary">
+        <div class="panel-heading">List Product</div>
+        <div class="panel-body">
+            <table class="table table-bordered table-hover">
+                <tr>
+                    <th style="width:100px;">Photo</th>
+                    <th>Name</th>
+                    <th style="width:200px;">Category</th>
+                    <th style="width:100px;">Price</th>
+                    <th style="width:70px;">Discount</th>
+                    <th style="width:70px;">Amount</th>
+                    <th style="width:70px;">Hot</th>
+                    <th style="width:100px;"></th>
+                </tr>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @* lấy đườg dẫn thư mục hiện tại  *@
+                            @if (item.Photo != null && File.Exists(Directory.GetCurrentDirectory() + "\\wwwroot\\Upload\\Products\\" + item.Photo))
+                            {
+                                <img src="~/Upload/Products/@item.Photo" style="width:100px" />
+                            }
+                        </td>
+                        <td>@item.Name </td>
+                        <td>@GetCategory(item.CategoryID)</td>
+                        <td>@item.Price </td>
+                        <td>@item.Discount % </td>
+                        <td>@item.Amount </td>
+                        <td>
+                            @if (item.Hot == 1)
+                            {<text>Hot</text>}
+                        </td>
+                        <td style="text-align:center;">
+                            <a href="/Admin/Products/Update/@item.ID">Edit</a>&nbsp;
+                            <a href="/Admin/Products/Delete/@item.ID" onclick="return window.confirm('Are you sure?');">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </table>
+            <style type="text/css">
+                .pagination {
+                    padding: 0px;
+                    margin: 0px;
+                }
+            </style>
+            @Html.PagedListPager((IPagedList)Model, page => Url.Action("Index", new { page = page }))
+        
+        </div>
+    </div>
+</div>
