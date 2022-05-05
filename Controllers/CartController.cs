@@ -64,6 +64,39 @@ namespace BTCK_PhanTienDo.Controllers
             return RedirectToAction("Index", "Cart");
         }
 
+        // updat noi nhan hang
+        public IActionResult Change(int? id)
+        {
+            /*
+             int? id: neu id co giatri thi id=giatri, neu id khong co giatri truyen vao thi 
+                id = null
+             */
+            int _id = id ?? 0;
+            //lay mot ban ghi
+            CustomersRecord record = db.Customers.Where(anhxa => anhxa.ID == _id).FirstOrDefault();
+            //goi view, truyen du lieu ra view
+            return View("Change", record);
+        }
+        [HttpPost]
+        public IActionResult Change(IFormCollection fc, int? id)
+        {
+            string _add = fc["Address"].ToString().Trim();
+            string _phone = fc["Phone"].ToString().Trim();
+         
+            //---
+            //lay ban ghi tuong ung voi id truyen vao
+            var record = db.Customers.Where(tbl => tbl.ID == id).FirstOrDefault();
+            //update ban ghi
+            record.Address = _add;
+            record.Phone = _phone;
+      
+            //---
+            //cap nhat ban ghi
+            db.SaveChanges();
+            //---
+            return Redirect("/Cart/Index");
+        }
+
         // thanh toan gio hang 
         public IActionResult Checkout()
         {

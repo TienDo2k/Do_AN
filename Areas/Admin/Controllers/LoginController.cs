@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BTCK_PhanTienDo.Models;
+using System.Net.Mail;
 using BC = BCrypt.Net.BCrypt;
 
 
@@ -79,69 +80,62 @@ namespace BTCK_PhanTienDo.Areas.Admin.Controllers
         }
 
         //Quên MK
-       
-        public IActionResult ForgotPassword()
-        {
-            return View();
-        }
-        [HttpPost]
-        public ActionResult ForgotPassword(string EmailID)
-        {
-            string resetCode = Guid.NewGuid().ToString();
-            var verifyUrl = "/Account/ResetPassword/" + resetCode;
-            var link = HttpContext.Request.Url.AbsoluteUri.Replace(Request.Url.PathAndQuery, verifyUrl);
-            using (var context = new MyDbContext())
-            {
-                var getUser = (from s in context.Users where s.Email == EmailID select s).FirstOrDefault();
-                if (getUser != null)
-                {
-                    getUser.ResetPasswordCode = resetCode;
 
-                    //This line I have added here to avoid confirm password not match issue , as we had added a confirm password property 
+        //public ActionResult Index()
+        //{
+        //    return View();
+        //}
+        //[HttpPost]
+        //public ActionResult Index(string EmailId)
+        //{
+        //    /*Create instance of entity model*/
+            
+        //    /*Getting data from database for email validation*/
+        //    var _objuserdetail = (from data in db.Users
+        //                          where data.Email == EmailId
+        //                          select data);
+        //    if (_objuserdetail.Count() > 0)
+        //    {
+        //        string status = SendPassword(_objuserdetail., _objuserdetail.Email, _objuserdetail.Name);
+        //        ViewBag.Message = 1;
+        //    }
+        //    else
+        //    {
+        //        ViewBag.Message = 0;
+        //    }
+        //    return View();
+        //}
+        //public string SendPassword(string password, string emailId, string name)
+        //{
+        //    try
+        //    {
+        //        MailMessage mail = new MailMessage();
+        //        mail.To.Add(emailId);
+        //        mail.From = new MailAddress("youremail @gmail.com");
+        //        mail.Subject = "Your password for account " + emailId;
+        //        string userMessage = "";
 
-                    context.Configuration.ValidateOnSaveEnabled = false;
-                    context.SaveChanges();
+        //        userMessage = userMessage + "<br/><b>Login Id:</b> " + emailId;
+        //        userMessage = userMessage + "<br/><b>Passsword: </b>" + password;
 
-                    var subject = "Password Reset Request";
-                    var body = "Hi " + getUser.FirstName + ", <br/> You recently requested to reset your password for your account. Click the link below to reset it. " +
+        //        string Body = "Dear " + name + ", <br/><br/>Login detail for your account is a follows:<br/></br> " + userMessage + "<br/><br/>Thanks";
+        //        mail.Body = Body;
+        //        mail.IsBodyHtml = true;
 
-                         " <br/><br/><a href='" + link + "'>" + link + "</a> <br/><br/>" +
-                         "If you did not request a password reset, please ignore this email or reply to let us know.<br/><br/> Thank you";
-
-                    SendEmail(getUser.Email, body, subject);
-
-                    ViewBag.Message = "Reset password link has been sent to your email id.";
-                }
-                else
-                {
-                    ViewBag.Message = "User doesn't exists.";
-                    return View();
-                }
-            }
-
-            return View();
-        }
-
-        private void SendEmail(string emailAddress, string body, string subject)
-        {
-            using (MailMessage mm = new MailMessage("youremail@gmail.com", emailAddress))
-            {
-                mm.Subject = subject;
-                mm.Body = body;
-
-                mm.IsBodyHtml = true;
-                SmtpClient smtp = new SmtpClient();
-                smtp.Host = "smtp.gmail.com";
-                smtp.EnableSsl = true;
-                NetworkCredential NetworkCred = new NetworkCredential("youremail@gmail.com", "YourPassword");
-                smtp.UseDefaultCredentials = true;
-                smtp.Credentials = NetworkCred;
-                smtp.Port = 587;
-                smtp.Send(mm);
-
-            }
-        }
-
+        //        SmtpClient smtp = new SmtpClient();
+        //        smtp.Host = "smtp.gmail.com"; //SMTP Server Address of gmail
+        //        smtp.Port = 587;
+        //        smtp.Credentials = new System.Net.NetworkCredential("youremail@gmail.com", "password");
+        //        // Smtp Email ID and Password For authentication
+        //        smtp.EnableSsl = true;
+        //        smtp.Send(mail);
+        //        return "Please check your email for account login detail.";
+        //    }
+        //    catch
+        //    {
+        //        return "Error............";
+        //    }
+        //}
     }
 
    
